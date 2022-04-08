@@ -1,6 +1,6 @@
 # basefind2
 
-A faster base address scanner based on [@mncoppola's](https://github.com/mncoppola) [basefind.py](https://github.com/mncoppola/ws30/blob/master/basefind.py) and [rbasefind](https://raw.githubusercontent.com/sgayou/rbasefind).
+A faster base address scanner based on [@mncoppola's](https://github.com/mncoppola) [basefind.py](https://github.com/mncoppola/ws30/blob/master/basefind.py) and [rbasefind](https://github.com/sgayou/rbasefind).
 
 ## Features
 Scans a flat 32-bit binary and attempt to determine the base address. Finds parts of the subsequent string differences
