@@ -3,7 +3,7 @@ import re, struct, argparse, array
 
 def get_pointers(file):
     pointers = set()
-    for offset in range(0, len(file), 4):
+    for offset in range(0, len(file) - 4, 4):
         ptr = struct.unpack("<L", file[offset : offset + 4])[0]
         pointers.add(ptr)
     pointers = list(pointers)
