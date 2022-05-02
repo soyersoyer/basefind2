@@ -17,7 +17,6 @@ def get_strings(file, min_length):
     strings = []
     for m in pattern.finditer(file):
         strings.append(m.start())
-    strings.sort()
     return strings
 
 def get_offsets(set):
