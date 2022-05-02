@@ -19,13 +19,13 @@ def get_strings(file, min_length):
         strings.append(m.start())
     return strings
 
-def get_offsets(set):
-    offsets = array.array("L")
+def get_differences(ptrs):
+    differences = array.array("L")
     last = 0
-    for ptr in set:
-        offsets.append(ptr - last)
+    for ptr in ptrs:
+        differences.append(ptr - last)
         last = ptr
-    return offsets
+    return differences
 
 # strs and ptrs are ordered, so we can make ordered search
 # only counts every samplerate elem, adjusts at return
@@ -66,25 +66,27 @@ print("scanning binary for pointers...")
 ptrs = get_pointers(file)
 print(f"total pointers found: {len(ptrs)}")
 
-str_offsets = get_offsets(strs)
-ptr_offsets = get_offsets(ptrs)
+str_diffs = get_differences(strs)
+ptr_diffs = get_differences(ptrs)
 
+# convert to bytes to use the python stringlib's find (mix of boyer-moore and horspool)
+# https://github.com/python/cpython/blob/main/Objects/stringlib/fastsearch.h
 ptrs_b = array.array("L", ptrs).tobytes()
-ptr_off_b = ptr_offsets.tobytes()
+ptr_diffs_b = ptr_diffs.tobytes()
 
 found = set()
 
 print(f"finding differences of length: {diff_len}")
-for si in range(0, len(str_offsets) - diff_len):
+for si in range(0, len(str_diffs) - diff_len):
     print(si, end = "\r")
 
-    str_b = str_offsets[si : si + diff_len].tobytes()
-    pi = ptr_off_b.find(str_b)
+    str_b = str_diffs[si : si + diff_len].tobytes()
+    pi = ptr_diffs_b.find(str_b)
 
     if pi == -1:
         continue
 
-    pi //= ptr_offsets.itemsize
+    pi //= ptr_diffs.itemsize
     offset = ptrs[pi] - strs[si]
     
     if offset < 0 or offset in found:
